@@ -1,13 +1,14 @@
 package services;
 
 import models.PrepaidTariff;
+import repositories.PrepaidTariffRepository;
 
 import java.util.List;
 
 public class PrepaidTariffService {
-    private final PrepaidTariffService prepaidTariffRepository;
+    private final PrepaidTariffRepository prepaidTariffRepository;
 
-    public PrepaidTariffService(PrepaidTariffService prepaidTariffRepository) {
+    public PrepaidTariffService(PrepaidTariffRepository prepaidTariffRepository) {
         this.prepaidTariffRepository = prepaidTariffRepository;
     }
 

@@ -12,7 +12,11 @@ public abstract class BasicTariff implements Tariff {
 
 
     public BasicTariff() {}
+    public BasicTariff( String name, int totalInternet) {
+        this.name = name;
+        this.totalInternet = totalInternet;
 
+    }
     public BasicTariff(int id, String name,  int restInternet, int totalInternet) {
         this.name = name;
         this.restInternet = restInternet;

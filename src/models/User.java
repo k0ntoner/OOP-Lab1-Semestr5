@@ -15,6 +15,12 @@ public class User {
     public User() {
 
     }
+    public User( String username, String phoneNumber, double wallet ) {
+
+        this.username = username;
+        this.phoneNumber = phoneNumber;
+        this.wallet = wallet;
+    }
     public User(int id, String username, String phoneNumber, double wallet, Date creationDate, Tariff tariff) {
         this.id = id;
         this.username = username;

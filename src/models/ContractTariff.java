@@ -14,7 +14,14 @@ public class ContractTariff extends BasicTariff{
         super();
     }
 
+    public ContractTariff(String name, double price, int totalMessagesCounts, Time totalCallsTime,   int totalInternet) {
+        super(name, totalInternet);
+        this.price = price;
+        this.totalMessagesCounts = totalMessagesCounts;
 
+        this.totalCallsTime = totalCallsTime;
+
+    }
     public ContractTariff(int id,String name, double price, int totalMessagesCounts, int restMessagesCounts, Time totalCallsTime, Time restCallsTime, int restInternet, int totalInternet) {
         super(id,name, restInternet, totalInternet);
         this.price = price;

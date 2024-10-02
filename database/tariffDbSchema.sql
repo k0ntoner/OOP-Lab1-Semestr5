@@ -14,21 +14,6 @@ CREATE TABLE IF NOT EXISTS `tariffsdb`.`users` (
   
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
-
-Create table if not exists `tariffsdb`.`user_tariffs`(
-  `id` int not null AUTO_INCREMENT,
-  `user_id` INT Not NULL,
-  `contract_tariffs_id` int default null,
-  `prepaid_tariffs_id` int default NULL,
-  `rest_messages_counts` int Default NULL,
-  `rest_calls_time` Time Default NULL,
-  `rest_internet`  int Default NULL,
-  PRIMARY KEY (`id`),
-  foreign key(`user_id`) references  `tariffsdb`.`users`(`id`) on delete cascade on update cascade,
-  foreign key(`contract_tariffs_id`) references  `tariffsdb`.`contract_tariffs`(`id`) on delete cascade on update cascade,
-  foreign key(`prepaid_tariffs_id`) references  `tariffsdb`.`prepaid_tariffs`(`id`) on delete cascade on update cascade)
-ENGINE = InnoDB;
-
 CREATE TABLE IF NOT EXISTS `tariffsdb`.`contract_tariffs` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
@@ -48,6 +33,21 @@ CREATE TABLE IF NOT EXISTS `tariffsdb`.`prepaid_tariffs` (
   `internet_price` double Default null,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
+Create table if not exists `tariffsdb`.`user_tariffs`(
+  `id` int not null AUTO_INCREMENT,
+  `user_id` INT Not NULL,
+  `contract_tariffs_id` int default null,
+  `prepaid_tariffs_id` int default NULL,
+  `rest_messages_counts` int Default NULL,
+  `rest_calls_time` Time Default NULL,
+  `rest_internet`  int Default NULL,
+  PRIMARY KEY (`id`),
+  foreign key(`user_id`) references  `tariffsdb`.`users`(`id`) on delete cascade on update cascade,
+  foreign key(`contract_tariffs_id`) references  `tariffsdb`.`contract_tariffs`(`id`) on delete cascade on update cascade,
+  foreign key(`prepaid_tariffs_id`) references  `tariffsdb`.`prepaid_tariffs`(`id`) on delete cascade on update cascade)
+ENGINE = InnoDB;
+
+
 
 
 

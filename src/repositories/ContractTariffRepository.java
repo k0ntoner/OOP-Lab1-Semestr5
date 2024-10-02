@@ -1,6 +1,7 @@
 package repositories;
 
 import configs.DatabaseConnection;
+import models.BasicTariff;
 import models.ContractTariff;
 import models.User;
 
@@ -34,6 +35,7 @@ public class ContractTariffRepository {
                 contractTariff.setPrice(resultSet.getDouble("price"));
 
             }
+
             return contractTariff;
         }
         catch(SQLException e){

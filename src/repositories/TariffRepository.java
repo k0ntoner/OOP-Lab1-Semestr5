@@ -1,6 +1,7 @@
 package repositories;
 
 import configs.DatabaseConnection;
+import interfaces.Tariff;
 import models.ContractTariff;
 import models.PrepaidTariff;
 import models.User;
@@ -12,10 +13,43 @@ import java.util.List;
 public class TariffRepository {
     private final ContractTariffRepository contractTariffRepository;
     private final PrepaidTariffRepository prepaidTariffRepository;
-
-    public TariffRepository(ContractTariffRepository contractTariffRepository, PrepaidTariffRepository prepaidTariffRepository) {
+    private final UserRepository userRepository;
+    public TariffRepository(ContractTariffRepository contractTariffRepository, PrepaidTariffRepository prepaidTariffRepository, UserRepository userRepository) {
         this.contractTariffRepository = contractTariffRepository;
         this.prepaidTariffRepository = prepaidTariffRepository;
+        this.userRepository = userRepository;
+    }
+    public User addTariffForUser(User user, Tariff tariff) {
+        String query;
+        if (tariff instanceof ContractTariff){
+            query = "Insert into user_tariffs (user_id, contract_tariffs_id) " +
+                    "Values(?,?)";
+
+        }
+        else if (tariff instanceof PrepaidTariff){
+            query = "Insert into user_tariffs (user_id, prepaid_tariffs_id) " +
+                    "Values(?,?)";
+        }
+        else{
+            return null;
+        }
+        try{
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1,  user.getId());
+            statement.setInt(2,  tariff.getId());
+            int rowAffected= statement.executeUpdate();
+            if(rowAffected>0){
+                return userRepository.getUserWithTariffById(user.getId());
+            }
+            else{
+                return null;
+            }
+        }
+        catch (Exception e){
+            return null;
+        }
+
     }
 
     public List<User> getAllUsersWithTariff(){
@@ -99,6 +133,79 @@ public class TariffRepository {
             return prepaidTariff;
         }
         catch(SQLException e){
+            return null;
+        }
+    }
+    public Tariff getTariffByName(String name){
+        String queryContract= "Select * " +
+                "From contract_tariffs " +
+                "Where name= '" +name+"'";
+        String queryPrepaid= "Select * " +
+                "From prepaid_tariffs " +
+                "Where name= '" +name+"'";
+        try{
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(queryPrepaid);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                PrepaidTariff prepaidTariff = new PrepaidTariff();
+                prepaidTariff.setId(resultSet.getInt("id"));
+                prepaidTariff.setName(resultSet.getString("name"));
+                prepaidTariff.setTotalInternet(resultSet.getInt("total_internet"));
+                prepaidTariff.setMessagesPrice(resultSet.getDouble("messages_price"));
+                prepaidTariff.setCallsPrice(resultSet.getDouble("calls_price"));
+                prepaidTariff.setInternetPrice(resultSet.getDouble("internet_price"));
+                return prepaidTariff;
+            }
+            statement = connection.prepareStatement(queryContract);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                ContractTariff contractTariff = new ContractTariff();
+                contractTariff.setId(resultSet.getInt("id"));
+                contractTariff.setName(resultSet.getString("name"));
+                contractTariff.setTotalMessagesCounts(resultSet.getInt("total_messages_counts"));
+                contractTariff.setTotalCallsTime(resultSet.getTime("total_calls_time"));
+                contractTariff.setTotalInternet(resultSet.getInt("total_internet"));
+                contractTariff.setPrice(resultSet.getDouble("price"));
+                return contractTariff;
+            }
+            return null;
+        }
+        catch(SQLException e){
+            return null;
+        }
+    }
+
+    public Tariff addTariff(Tariff tariff){
+        String query;
+        if (tariff instanceof ContractTariff){
+            ContractTariff contractTariff = (ContractTariff) tariff;
+            query = "Insert into contract_tariffs (name, total_messages_counts, total_calls_time, total_internet, price) " +
+                    "Values('"+contractTariff.getName()+"',"+contractTariff.getTotalMessagesCounts()+",'"+contractTariff.getTotalCallsTime()+"',"+contractTariff.getTotalInternet()+","+contractTariff.getPrice()+")";
+
+        }
+        else if (tariff instanceof PrepaidTariff){
+            PrepaidTariff prepaidTariff = (PrepaidTariff) tariff;
+            query = "Insert into prepaid_tariffs (name, messages_price, calls_price, total_internet, internet_price) " +
+                    "Values('"+prepaidTariff.getName()+"',"+prepaidTariff.getMessagesPrice()+","+prepaidTariff.getCallsPrice()+","+prepaidTariff.getTotalInternet()+","+prepaidTariff.getInternetPrice()+")";
+        }
+        else{
+            return null;
+        }
+        try{
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            int rowAffected= statement.executeUpdate();
+            if(rowAffected>0){
+                return getTariffByName(tariff.getName());
+            }
+            else{
+                return null;
+            }
+        }
+        catch (Exception e){
             return null;
         }
     }
