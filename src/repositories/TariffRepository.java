@@ -54,7 +54,7 @@ public class TariffRepository {
 
     public List<User> getAllUsersWithTariff(){
         String query= "Select * " +
-                "From contract_tariffs " +
+                "From user_tariffs " +
                 "Join users on users.id=user_tariffs.user_id" ;
 
         try {

@@ -9,7 +9,12 @@ public class PrepaidTariff extends BasicTariff {
     protected double callsPrice;
     protected double internetPrice;
     public PrepaidTariff() {}
-
+    public PrepaidTariff(String name, int totalInternet, double messagesPrice, double callsPrice, double internetPrice) {
+        super(name,  totalInternet);
+        this.messagesPrice = messagesPrice;
+        this.callsPrice = callsPrice;
+        this.internetPrice = internetPrice;
+    }
     public PrepaidTariff(int id, String name, int restInternet, int totalInternet, double messagesPrice, double callsPrice, double internetPrice) {
         super(id, name, restInternet, totalInternet);
         this.messagesPrice = messagesPrice;

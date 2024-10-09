@@ -46,17 +46,10 @@ Create table if not exists `tariffsdb`.`user_tariffs`(
   foreign key(`contract_tariffs_id`) references  `tariffsdb`.`contract_tariffs`(`id`) on delete cascade on update cascade,
   foreign key(`prepaid_tariffs_id`) references  `tariffsdb`.`prepaid_tariffs`(`id`) on delete cascade on update cascade)
 ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS trigger_logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    log_message VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-
-
-
-
-Insert into `tariffsdb`.`users`(username, phone_number, wallet, created_at)
-Values('usertest', 3808888888888, 0, Now());
-
-insert into `tariffsdb`.`contract_tariffs`(name, total_messages_counts, total_calls_time, total_internet, price)
-Values('tariffTest', 5, '00:05:00', 8000, 320);
-
-insert into `tariffsdb`.`user_tariffs`(user_id, contract_tariffs_id, rest_messages_counts, rest_calls_time, rest_internet)
-Values(1, 1, 5,'00:05:00', 8000);
 
