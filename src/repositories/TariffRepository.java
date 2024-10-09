@@ -30,7 +30,7 @@ public class TariffRepository {
             query = "Insert into user_tariffs (user_id, prepaid_tariffs_id) " +
                     "Values(?,?)";
         }
-        else{пше
+        else{
             return null;
         }
         try{
