@@ -87,7 +87,7 @@ public class TariffRepository {
         String query= "Select * " +
                 "From contract_tariffs " +
                 "Where total_messages_counts= " +totalMessagesCounts+
-                " and total_calls_time="+totalCallsTime+
+                " and total_calls_time= '"+totalCallsTime+"'"+
                 " and total_internet="+totalInternet+
                 " and price="+price;
         try {
@@ -103,6 +103,9 @@ public class TariffRepository {
                 contractTariff.setTotalInternet(resultSet.getInt("total_internet"));
                 contractTariff.setPrice(resultSet.getDouble("price"));
             }
+            else{
+                return null;
+            }
             return contractTariff;
         }
         catch(SQLException e){
@@ -111,7 +114,7 @@ public class TariffRepository {
     }
     public PrepaidTariff findTariffByParameters(double messagesPrice, double callsPrice, int totalInternet, double InternetPrice){
         String query= "Select * " +
-                "From contract_tariffs " +
+                "From prepaid_tariffs " +
                 "Where messages_price= " +messagesPrice+
                 " and calls_price="+callsPrice+
                 " and total_internet="+totalInternet+
@@ -129,6 +132,9 @@ public class TariffRepository {
                 prepaidTariff.setCallsPrice(resultSet.getDouble("calls_price"));
                 prepaidTariff.setInternetPrice(resultSet.getDouble("internet_price"));
 
+            }
+            else{
+                return null;
             }
             return prepaidTariff;
         }
@@ -208,5 +214,90 @@ public class TariffRepository {
         catch (Exception e){
             return null;
         }
+    }
+    private List<Tariff> getAllContractTariff(){
+        String query= "Select * " +
+                "From contract_tariffs ";
+
+        try{
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            List<Tariff> tariffs = new ArrayList<>();
+
+            while (resultSet.next()) {
+                ContractTariff contractTariff = new ContractTariff();
+                contractTariff.setId(resultSet.getInt("id"));
+                contractTariff.setName(resultSet.getString("name"));
+                contractTariff.setTotalMessagesCounts(resultSet.getInt("total_messages_counts"));
+                contractTariff.setTotalCallsTime(resultSet.getTime("total_calls_time"));
+                contractTariff.setTotalInternet(resultSet.getInt("total_internet"));
+                contractTariff.setPrice(resultSet.getDouble("price"));
+                tariffs.add(contractTariff);
+
+            }
+            return tariffs;
+        }
+        catch(SQLException e){
+            return null;
+        }
+    }
+    private List<Tariff> getAllPrepaidTariff(){
+        String query= "Select * " +
+                "From prepaid_tariffs ";
+
+        try{
+            Connection connection = DatabaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            List<Tariff> tariffs = new ArrayList<>();
+
+            while (resultSet.next()) {
+                PrepaidTariff prepaidTariff = new PrepaidTariff();
+                prepaidTariff.setId(resultSet.getInt("id"));
+                prepaidTariff.setName(resultSet.getString("name"));
+                prepaidTariff.setTotalInternet(resultSet.getInt("total_internet"));
+                prepaidTariff.setMessagesPrice(resultSet.getDouble("messages_price"));
+                prepaidTariff.setCallsPrice(resultSet.getDouble("calls_price"));
+                prepaidTariff.setInternetPrice(resultSet.getDouble("internet_price"));
+                tariffs.add(prepaidTariff);
+
+            }
+            return tariffs;
+        }
+        catch(SQLException e){
+            return null;
+        }
+    }
+    public List<Tariff> getAllTariffs() {
+        List<Tariff> tariffs = new ArrayList<>();
+        try{
+            if(getAllContractTariff()!=null){
+                tariffs.addAll( getAllContractTariff() );
+            }
+            if(getAllPrepaidTariff()!=null){
+                tariffs.addAll( getAllPrepaidTariff() );
+            }
+            return tariffs;
+        }
+        catch (Exception e){
+            return null;
+        }
+
+    }
+    public List<Tariff> sortTariffsByPrice(List<Tariff> tariffs){
+        for(int i=0; i<tariffs.size()-1; i++){
+            Tariff smallestTariff = tariffs.get(i);
+            for(int j=i+1; j<tariffs.size(); j++){
+                Tariff tariff = tariffs.get(j);
+                if(tariff.getPrice()<smallestTariff.getPrice()){
+                    Tariff mix=smallestTariff;
+                    smallestTariff=tariff;
+                    tariffs.set(j,mix);
+                }
+            }
+            tariffs.set(i,smallestTariff);
+        }
+        return tariffs;
     }
 }

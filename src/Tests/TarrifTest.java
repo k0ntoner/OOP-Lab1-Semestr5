@@ -56,15 +56,59 @@ public class TarrifTest {
         User user2AfterAddingTariff = tariffService.addTariffForUser(user2FromDb, tariff2);
         List<User> users= tariffService.getAllUsersWithTariff();
         assertEquals(3,users.size());
-
-
-
-
-
     }
     @Test
-    public void testFindTariffByParameters(){
+    public void testGetAllTariffs(){
+        TariffService tariffService=new TariffService(new TariffRepository(new ContractTariffRepository(), new PrepaidTariffRepository(), new UserRepository(new ContractTariffRepository(),new PrepaidTariffRepository())));
+        DataBaseService dataBaseService=new DataBaseService(new DataBaseRepository());
+        dataBaseService.restartDataBase();
+        PrepaidTariff prepaidTariff=new PrepaidTariff("PrepaidTariffTest", 200, 0.5, 1, 5 );
+        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 300, 50, new Time(0,5,0), 8000 );
+        ContractTariff contractTariff2=new ContractTariff("ContractTariffTest2", 150, 50, new Time(0,5,0), 8000 );
+        Tariff tariff1= tariffService.addTariff(contractTariff);
+        Tariff tariff2= tariffService.addTariff(prepaidTariff);
+        Tariff tariff3= tariffService.addTariff(contractTariff2);
+        List<Tariff> tariffs= tariffService.getAllTariffs();
+        assertEquals(3,tariffs.size());
+    }
+    @Test
+    public void testGetTariffsSortingByPrice(){
+        TariffService tariffService=new TariffService(new TariffRepository(new ContractTariffRepository(), new PrepaidTariffRepository(), new UserRepository(new ContractTariffRepository(),new PrepaidTariffRepository())));
+        DataBaseService dataBaseService=new DataBaseService(new DataBaseRepository());
+        dataBaseService.restartDataBase();
+        PrepaidTariff prepaidTariff=new PrepaidTariff("PrepaidTariffTest", 200, 0.5, 1, 5 );
+        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 300, 50, new Time(0,5,0), 8000 );
+        ContractTariff contractTariff2=new ContractTariff("ContractTariffTest2", 150, 50, new Time(0,5,0), 8000 );
+        Tariff tariff1= tariffService.addTariff(contractTariff);
+        Tariff tariff2= tariffService.addTariff(prepaidTariff);
+        Tariff tariff3= tariffService.addTariff(contractTariff2);
+        List<Tariff> tariffs= tariffService.getAllTariffs();
+        assertEquals(3,tariffs.size());
+        List<Tariff> tariffsSortingByPrice= tariffService.getAllSortingTariffsByPrice(tariffs);
+        assertEquals(3,tariffsSortingByPrice.size());
+        assertEquals(tariffsSortingByPrice.get(0).getPrice()<tariffsSortingByPrice.get(1).getPrice(), true);
+        assertEquals(tariffsSortingByPrice.get(1).getPrice()<tariffsSortingByPrice.get(2).getPrice(), true);
+    }
 
+    @Test
+    public void testFindTariffByParameters(){
+        TariffService tariffService=new TariffService(new TariffRepository(new ContractTariffRepository(), new PrepaidTariffRepository(), new UserRepository(new ContractTariffRepository(),new PrepaidTariffRepository())));
+        DataBaseService dataBaseService=new DataBaseService(new DataBaseRepository());
+        dataBaseService.restartDataBase();
+        PrepaidTariff prepaidTariff=new PrepaidTariff("PrepaidTariffTest", 200, 0.5, 1, 5 );
+        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 300, 50, new Time(0,5,0), 8000 );
+        ContractTariff contractTariff2=new ContractTariff("ContractTariffTest2", 150, 50, new Time(0,5,0), 8000 );
+        Tariff tariff1= tariffService.addTariff(contractTariff);
+        Tariff tariff2= tariffService.addTariff(prepaidTariff);
+        Tariff tariff3= tariffService.addTariff(contractTariff2);
+        Tariff tariff1ByParameters = tariffService.findTariffByParameters(50, new Time(0,5,0), 8000, 300);
+        Tariff tariff2ByParameters= tariffService.findTariffByParameters(0.5, 1, 200, 5);
+        Tariff tariff3ByParameters = tariffService.findTariffByParameters(50, new Time(0,5,0), 8000, 150);
+        Tariff nullTariff=tariffService.findTariffByParameters(0, new Time(0,5,0), 8000, 0);
+        assertEquals(tariff1ByParameters.getId(),tariff1.getId());
+        assertEquals(tariff2ByParameters.getId(),tariff2.getId());
+        assertEquals(tariff3ByParameters.getId(),tariff3.getId());
+        assertEquals(nullTariff,null);
 
 
     }

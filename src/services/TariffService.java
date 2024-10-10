@@ -31,4 +31,6 @@ public class TariffService {
     public User addTariffForUser(User user, Tariff tariff){
         return tariffRepository.addTariffForUser(user, tariff);
     }
+    public List<Tariff> getAllTariffs(){ return tariffRepository.getAllTariffs(); }
+    public List<Tariff> getAllSortingTariffsByPrice(List<Tariff> tariffs){ return tariffRepository.sortTariffsByPrice(tariffs); }
 }

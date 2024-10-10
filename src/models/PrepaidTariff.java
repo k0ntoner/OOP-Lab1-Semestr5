@@ -45,4 +45,9 @@ public class PrepaidTariff extends BasicTariff {
     public void setInternetPrice(double internetPrice) {
         this.internetPrice = internetPrice;
     }
+
+    @Override
+    public double getPrice() {
+        return messagesPrice + callsPrice + internetPrice;
+    }
 }
