@@ -15,6 +15,12 @@ public class PrepaidTariff extends BasicTariff {
         this.callsPrice = callsPrice;
         this.internetPrice = internetPrice;
     }
+    public PrepaidTariff(int id,String name, int totalInternet, double messagesPrice, double callsPrice, double internetPrice) {
+        super(id,name,  totalInternet);
+        this.messagesPrice = messagesPrice;
+        this.callsPrice = callsPrice;
+        this.internetPrice = internetPrice;
+    }
     public PrepaidTariff(int id, String name, int restInternet, int totalInternet, double messagesPrice, double callsPrice, double internetPrice) {
         super(id, name, restInternet, totalInternet);
         this.messagesPrice = messagesPrice;
@@ -49,5 +55,35 @@ public class PrepaidTariff extends BasicTariff {
     @Override
     public double getPrice() {
         return messagesPrice + callsPrice + internetPrice;
+    }
+
+    @Override
+    public String getInsertDerivedQuery() {
+        return "INSERT INTO prepaid_tariffs (id, messages_price, calls_price, internet_price) VALUES (?, ?, ?, ?)";
+    }
+
+    @Override
+    public String getFindByNameQuery() {
+        return "";
+    }
+
+    @Override
+    public String getFindByIdQuery() {
+        return "";
+    }
+
+    @Override
+    public String getInsertBasicQuery() {
+        return "INSERT INTO basic_tariffs (name, total_internet, tariff_type) VALUES (?, ?, ?)";
+    }
+
+    @Override
+    public Object[] getInsertBasicParams() {
+        return new Object[]{ name, totalInternet, "prepaid"};
+    }
+
+    @Override
+    public Object[] getInsertDerivedParams() {
+        return new Object[]{id, messagesPrice, callsPrice, internetPrice};
     }
 }

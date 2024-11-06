@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UserTest {
     @Test
     public void testGetUserWithTariffById(){
-        DataBaseService dataBaseService=new DataBaseService(new DataBaseRepository());
+        DataBaseService dataBaseService=new DataBaseService();
         dataBaseService.restartDataBase();
-        UserService userService=new UserService(new UserRepository(new ContractTariffRepository(), new PrepaidTariffRepository()));
-        TariffService tariffService=new TariffService(new TariffRepository(new ContractTariffRepository(), new PrepaidTariffRepository(), new UserRepository(new ContractTariffRepository(), new PrepaidTariffRepository())));
-        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 300, 50, new Time(0,5,0), 8000 );
+        UserService userService=new UserService();
+        TariffService tariffService=new TariffService();
+        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 8000, 50, new Time(0,5,0), 300);
         Tariff tariff= tariffService.addTariff(contractTariff);
         User user=new User("UserTest", "+380999999999", 700);
         User userAfterAdd=userService.addUser(user);

@@ -14,31 +14,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TarrifTest {
-    @Test
-    public void testGetContractTariffByUserId(){
 
-        ContractTariffService contractTariffService=new ContractTariffService(new ContractTariffRepository());
-        ContractTariff contractTariff=contractTariffService.getContractTariffByUserId(1);
-        assertEquals(1,contractTariff.getId());
-
-    }
-    @Test
-    public void testGetPrepaidTariffByUserId(){
-        PrepaidTariffService prepaidTariffService =new PrepaidTariffService(new PrepaidTariffRepository());
-        PrepaidTariff prepaidTariff = prepaidTariffService.getPrepaidTariffByUserId(1);
-        assertEquals(1,prepaidTariff.getId());
-
-
-
-    }
     @Test
     public void testGetAllUsersWithTariff(){
-        TariffService tariffService=new TariffService(new TariffRepository(new ContractTariffRepository(), new PrepaidTariffRepository(), new UserRepository(new ContractTariffRepository(),new PrepaidTariffRepository())));
-        DataBaseService dataBaseService=new DataBaseService(new DataBaseRepository());
+        TariffService tariffService=new TariffService();
+        DataBaseService dataBaseService=new DataBaseService();
         dataBaseService.restartDataBase();
-        UserService userService=new UserService(new UserRepository(new ContractTariffRepository(), new PrepaidTariffRepository()));
+        UserService userService=new UserService();
         PrepaidTariff prepaidTariff=new PrepaidTariff("PrepaidTariffTest", 200, 0.5, 1, 5 );
-        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 300, 50, new Time(0,5,0), 8000 );
+        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 8000, 50, new Time(0,5,0), 300);
         Tariff tariff1= tariffService.addTariff(contractTariff);
         Tariff tariff2= tariffService.addTariff(prepaidTariff);
 
@@ -59,12 +43,12 @@ public class TarrifTest {
     }
     @Test
     public void testGetAllTariffs(){
-        TariffService tariffService=new TariffService(new TariffRepository(new ContractTariffRepository(), new PrepaidTariffRepository(), new UserRepository(new ContractTariffRepository(),new PrepaidTariffRepository())));
-        DataBaseService dataBaseService=new DataBaseService(new DataBaseRepository());
+        TariffService tariffService=new TariffService();
+        DataBaseService dataBaseService=new DataBaseService();
         dataBaseService.restartDataBase();
         PrepaidTariff prepaidTariff=new PrepaidTariff("PrepaidTariffTest", 200, 0.5, 1, 5 );
-        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 300, 50, new Time(0,5,0), 8000 );
-        ContractTariff contractTariff2=new ContractTariff("ContractTariffTest2", 150, 50, new Time(0,5,0), 8000 );
+        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 8000, 50, new Time(0,5,0), 300);
+        ContractTariff contractTariff2=new ContractTariff("ContractTariffTest2", 8000, 50, new Time(0,5,0), 150);
         Tariff tariff1= tariffService.addTariff(contractTariff);
         Tariff tariff2= tariffService.addTariff(prepaidTariff);
         Tariff tariff3= tariffService.addTariff(contractTariff2);
@@ -73,12 +57,12 @@ public class TarrifTest {
     }
     @Test
     public void testGetTariffsSortingByPrice(){
-        TariffService tariffService=new TariffService(new TariffRepository(new ContractTariffRepository(), new PrepaidTariffRepository(), new UserRepository(new ContractTariffRepository(),new PrepaidTariffRepository())));
-        DataBaseService dataBaseService=new DataBaseService(new DataBaseRepository());
+        TariffService tariffService=new TariffService();
+        DataBaseService dataBaseService=new DataBaseService();
         dataBaseService.restartDataBase();
         PrepaidTariff prepaidTariff=new PrepaidTariff("PrepaidTariffTest", 200, 0.5, 1, 5 );
-        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 300, 50, new Time(0,5,0), 8000 );
-        ContractTariff contractTariff2=new ContractTariff("ContractTariffTest2", 150, 50, new Time(0,5,0), 8000 );
+        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 8000, 50, new Time(0,5,0), 300);
+        ContractTariff contractTariff2=new ContractTariff("ContractTariffTest2", 8000, 50, new Time(0,5,0), 150);
         Tariff tariff1= tariffService.addTariff(contractTariff);
         Tariff tariff2= tariffService.addTariff(prepaidTariff);
         Tariff tariff3= tariffService.addTariff(contractTariff2);
@@ -92,12 +76,12 @@ public class TarrifTest {
 
     @Test
     public void testFindTariffByParameters(){
-        TariffService tariffService=new TariffService(new TariffRepository(new ContractTariffRepository(), new PrepaidTariffRepository(), new UserRepository(new ContractTariffRepository(),new PrepaidTariffRepository())));
-        DataBaseService dataBaseService=new DataBaseService(new DataBaseRepository());
+        TariffService tariffService=new TariffService();
+        DataBaseService dataBaseService=new DataBaseService();
         dataBaseService.restartDataBase();
         PrepaidTariff prepaidTariff=new PrepaidTariff("PrepaidTariffTest", 200, 0.5, 1, 5 );
-        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 300, 50, new Time(0,5,0), 8000 );
-        ContractTariff contractTariff2=new ContractTariff("ContractTariffTest2", 150, 50, new Time(0,5,0), 8000 );
+        ContractTariff contractTariff=new ContractTariff("ContractTariffTest", 8000, 50, new Time(0,5,0), 300);
+        ContractTariff contractTariff2=new ContractTariff("ContractTariffTest2", 8000, 50, new Time(0,5,0), 150);
         Tariff tariff1= tariffService.addTariff(contractTariff);
         Tariff tariff2= tariffService.addTariff(prepaidTariff);
         Tariff tariff3= tariffService.addTariff(contractTariff2);

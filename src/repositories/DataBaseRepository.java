@@ -1,24 +1,24 @@
 package repositories;
 
-import configs.DatabaseConnection;
+import configs.DatabaseTestConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DataBaseRepository {
-    public void clearDatabase(){
+    public static void clearDatabase(){
         String[] queries = {
                 "SET FOREIGN_KEY_CHECKS = 0;",
                 "DROP TABLE IF EXISTS contract_tariffs;",
                 "DROP TABLE IF EXISTS prepaid_tariffs;",
+                "DROP TABLE IF EXISTS basic_tariffs;",
                 "DROP TABLE IF EXISTS user_tariffs;",
                 "DROP TABLE IF EXISTS users;",
                 "SET FOREIGN_KEY_CHECKS = 1;"
         };
         try {
-            Connection connection = DatabaseConnection.getConnection();
+            Connection connection = DatabaseTestConnection.getConnection();
 
             for(String query : queries){
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -29,7 +29,7 @@ public class DataBaseRepository {
             System.out.println(e);
         }
     }
-    public void fillDatabase(){
+    public  static void fillDatabase(){
         String[] queries = {"CREATE TABLE IF NOT EXISTS `tariffsdb`.`users` (\n" +
                 "  `id` INT NOT NULL AUTO_INCREMENT,\n" +
                 "  `username` VARCHAR(45) NOT NULL,\n" +
@@ -37,46 +37,46 @@ public class DataBaseRepository {
                 "  `wallet` double default 0,\n" +
                 "  `created_at` timestamp,\n" +
                 "  PRIMARY KEY (`id`))\n" +
-                "ENGINE = InnoDB;\n",
-
-
-
-                "CREATE TABLE IF NOT EXISTS `tariffsdb`.`contract_tariffs` (\n" +
+                "ENGINE = InnoDB;\n" ,
+                "CREATE TABLE IF NOT EXISTS `tariffsdb`.`basic_tariffs` (\n" +
                 "  `id` INT NOT NULL AUTO_INCREMENT,\n" +
                 "  `name` VARCHAR(45) NOT NULL,\n" +
+                "  `total_internet`  int Default NULL,\n" +
+                "  `tariff_type` VARCHAR(45) NOT NULL,\n" +
+                "  PRIMARY KEY (`id`))\n" +
+                "ENGINE = InnoDB;\n" +
+                "\n" ,
+                "CREATE TABLE IF NOT EXISTS `tariffsdb`.`contract_tariffs` (\n" +
+                "  `id` INT,\n" +
                 "  `total_messages_counts` int Default NULL,\n" +
                 "  `total_calls_time` Time Default NULL,\n" +
-                "  `total_internet`  int Default NULL,\n" +
                 "  `price` double not null,\n" +
-                "  PRIMARY KEY (`id`))\n" +
-                "ENGINE = InnoDB;\n",
-
+                "  PRIMARY KEY (`id`),\n" +
+                "  FOREIGN KEY (`id`) REFERENCES `tariffsdb`.`basic_tariffs`(`id`))\n" +
+                "ENGINE = InnoDB;\n" +
+                "\n" ,
                 "CREATE TABLE IF NOT EXISTS `tariffsdb`.`prepaid_tariffs` (\n" +
-                "  `id` INT NOT NULL AUTO_INCREMENT,\n" +
-                "  `name` VARCHAR(45) NOT NULL,\n" +
+                "  `id` INT,\n" +
                 "  `messages_price` double Default NULL,\n" +
                 "  `calls_price` double Default NULL,\n" +
-                "  `total_internet`  int Default NULL,\n" +
                 "  `internet_price` double Default null,\n" +
-                "  PRIMARY KEY (`id`))\n" +
-                "ENGINE = InnoDB;",
-
+                "  PRIMARY KEY (`id`),\n" +
+                "  FOREIGN KEY (`id`) REFERENCES `tariffsdb`.`basic_tariffs`(`id`))\n" +
+                "ENGINE = InnoDB;\n" ,
                 "Create table if not exists `tariffsdb`.`user_tariffs`(\n" +
-                        "  `id` int not null AUTO_INCREMENT,\n" +
-                        "  `user_id` INT Not NULL,\n" +
-                        "  `contract_tariffs_id` int default null,\n" +
-                        "  `prepaid_tariffs_id` int default NULL,\n" +
-                        "  `rest_messages_counts` int Default NULL,\n" +
-                        "  `rest_calls_time` Time Default NULL,\n" +
-                        "  `rest_internet`  int Default NULL,\n" +
-                        "  PRIMARY KEY (`id`),\n" +
-                        "  foreign key(`user_id`) references  `tariffsdb`.`users`(`id`) on delete cascade on update cascade,\n" +
-                        "  foreign key(`contract_tariffs_id`) references  `tariffsdb`.`contract_tariffs`(`id`) on delete cascade on update cascade,\n" +
-                        "  foreign key(`prepaid_tariffs_id`) references  `tariffsdb`.`prepaid_tariffs`(`id`) on delete cascade on update cascade)\n" +
-                        "ENGINE = InnoDB;\n"
+                "  `id` int not null AUTO_INCREMENT,\n" +
+                "  `user_id` INT Not NULL,\n" +
+                "  `tariff_id` int default null,\n" +
+                "  `rest_messages_counts` int Default NULL,\n" +
+                "  `rest_calls_time` Time Default NULL,\n" +
+                "  `rest_internet`  int Default NULL,\n" +
+                "  PRIMARY KEY (`id`),\n" +
+                "  foreign key(`user_id`) references  `tariffsdb`.`users`(`id`) on delete cascade on update cascade,\n" +
+                "  foreign key(`tariff_id`) references  `tariffsdb`.`basic_tariffs`(`id`) on delete cascade on update cascade)\n" +
+                "ENGINE = InnoDB;\n"
         };
         try {
-            Connection connection = DatabaseConnection.getConnection();
+            Connection connection = DatabaseTestConnection.getConnection();
 
             for(String query : queries){
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -88,7 +88,7 @@ public class DataBaseRepository {
         }
 
     }
-    private void addTriggers(){
+    private static void addTriggers(){
         String queries[]={"DROP TRIGGER IF EXISTS after_insert_user_tariffs;\n",
                 "DELIMITER //\n" +
                 "Create trigger after_insert_user_tariffs\n" +
@@ -115,7 +115,7 @@ public class DataBaseRepository {
                 "DELIMITER ;"
         };
         try {
-            Connection connection = DatabaseConnection.getConnection();
+            Connection connection = DatabaseTestConnection.getConnection();
 
             for(String query : queries){
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -126,10 +126,9 @@ public class DataBaseRepository {
 
         }
     }
-    public void RestartDatabase(){
+    public static void RestartDatabase(){
         clearDatabase();
         fillDatabase();
-        addTriggers();
     }
 
 
